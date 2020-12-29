@@ -16,27 +16,33 @@ namespace RubiksStuff
             string[] things2 = line2.Split(",");
             int fool = things2.Length;
             int[] primes2 = new int[fool];
+            DirectorySetup setup = new DirectorySetup();
+            setup.EnterDirecPath();
             for (int ai = 0; ai < fool; ai++)
             {
                 primes2[ai] = int.Parse(things2[ai]);
             }
             Console.WriteLine("Hello World!");
-            int foo = 2;
+            int foo = 0;
             if (foo == 0)
             {
                 RunStuff1 rs1 = new RunStuff1();
+                rs1.SetDirecPath(setup.GetDP());
                 rs1.DoIt(primes2);
+                
                 DataFileMaker dfm = new DataFileMaker();
                 dfm.ReadAllRuns();
             }
             else if (foo == 1)
             {
                 RunStuff0 rs0 = new RunStuff0();
+                rs0.SetDirecPath(setup.GetDP());
                 rs0.DoStuff2(1, 3, 15, primes2, 100, 10000);
             }
             else if (foo == 2)
             {
                 ParamLoader loadz = new ParamLoader();
+                loadz.LoadDirecPath(setup.GetDP());
                 loadz.LoadIt(primes2);
             }
         }
@@ -77,11 +83,27 @@ namespace RubiksStuff
         private string direcpath;
         public void SetupDirectoryPath(string direcpathin)
         {
-
+            direcpath = direcpathin;
         }
+        public void EnterDirecPath()
+        {
+            Console.WriteLine("Enter directory path below:");
+            dp = Console.ReadLine();
+            direcpath = @"" + dp;
+        }
+        public string GetDP()
+        {
+            return direcpath;
+        }
+        private string dp;
     }
     class ParamLoader
     {
+        public void LoadDirecPath(string direcin)
+        {
+            direcpath = direcin;
+        }
+        private string direcpath;
         private string line, path;
         private int nls;
         private RunStuff1 rss1;
@@ -93,12 +115,14 @@ namespace RubiksStuff
              */
             Console.WriteLine("Enter param file number below:");
             line = Console.ReadLine();
-            path = @"C:\rubiks\standard\cstuff\params\par" + line + ".dat";
+            path = direcpath;
+            path = path + "\\rubiks\\standard\\cstuff\\params\\par" + line + ".dat";
             lines = System.IO.File.ReadAllLines(path);
             nls = lines.Length;
             for (int yyy = 0; yyy < nls; yyy++)
             {
                 rss1 = new RunStuff1();
+                rss1.SetDirecPath(direcpath);
                 rss1.DoIt3(lines[yyy], primes2in);
             }
         }
@@ -111,14 +135,18 @@ namespace RubiksStuff
         private ArrayList labels, labeled, scores0, scores1;
         private long dt, dong;
         private BigInteger maxrecl;
-        private string path2, path, line0, line1, templab;
+        private string path2, path, line0, line1, templab,direcpath;
         private LabeledThing thing;
         /*
          * Labels denote the "type d n l" string unique with each labeled.
          */
+         public void SetDirecPath(string direcpathin)
+        {
+            direcpath = direcpathin;
+        }
         public void ReadAllRuns()
         {
-            path2 = @"C:\rubiks\standard\cstuff\runs\";
+            path2 = direcpath + "\\rubiks\\standard\\cstuff\\runs\\";
             labels = new ArrayList();
             labeled = new ArrayList();
             scores0 = new ArrayList();
@@ -291,7 +319,11 @@ namespace RubiksStuff
         private long tottake, dtper;
         private ArrayList binos, countos, lineos;
 
-        private string path, path2, path3, path4;
+        private string path, path2, path3, path4,direcpath;
+        public void SetDirecPath(string dirin)
+        {
+            direcpath = dirin;
+        }
         public void DoIt3(String linein, int[] primes2in)
         {
             line = linein;
@@ -305,7 +337,8 @@ namespace RubiksStuff
             usedist = bool.Parse(things[7]);
             dt2 = long.Parse(things[6]);
             rss0 = new RunStuff0();
-            path2 = @"C:\rubiks\standard\cstuff\runs\";
+            rss0.SetDirecPath(direcpath);
+            path2 = direcpath + "\\rubiks\\standard\\cstuff\\runs\\";
             fcount = Directory.GetFiles(path2, "*", SearchOption.TopDirectoryOnly).Length;
             path = path2 + "run_" + fcount.ToString() + ".dat";
             nlv = ((lmax + 1) - lmin) * ((nmax + 1) - nmin);
@@ -314,7 +347,7 @@ namespace RubiksStuff
 
             Console.WriteLine("TOTALTAKE: " + tottake);
             cunt = 1;
-            path4 = @"C:\rubiks\standard\cstuff\dists\";
+            path4 = direcpath + "\\rubiks\\standard\\cstuff\\dists\\";
             gcount = Directory.GetFiles(path4, "*", SearchOption.TopDirectoryOnly).Length;
             lines = new string[(nlv * 2) + 1];
             if (usedist)
@@ -412,14 +445,14 @@ namespace RubiksStuff
             usedist = bool.Parse(things[7]);
             dt2 = long.Parse(things[6]);
             rss0 = new RunStuff0();
-            path2 = @"C:\rubiks\standard\cstuff\runs\";
+            path2 = direcpath + "\\rubiks\\standard\\cstuff\\runs\\";
             fcount = Directory.GetFiles(path2, "*", SearchOption.TopDirectoryOnly).Length;
             path = path2 + "run_" + fcount.ToString() + ".dat";
             nlv = ((lmax + 1) - lmin) * ((nmax + 1) - nmin);
             tottake = nlv * dt2;
             Console.WriteLine("TOTALTAKE: " + tottake);
             cunt = 1;
-            path4 = @"C:\rubiks\standard\cstuff\dists\";
+            path4 = direcpath + "\\rubiks\\standard\\cstuff\\dists\\";
             gcount = Directory.GetFiles(path4, "*", SearchOption.TopDirectoryOnly).Length;
             lines = new string[(nlv * 2) + 1];
             if (usedist)
@@ -530,6 +563,11 @@ namespace RubiksStuff
         {
             return nt;
         }
+        public void SetDirecPath(string direcpathin)
+        {
+            direcpath = direcpathin;
+        }
+        private string direcpath;
         public void DoStuff2(int typein, int din, int nin, int[] primes2in, int lin, long dtin)
         {
             primes = primes2in;
@@ -540,15 +578,19 @@ namespace RubiksStuff
             st = DateTimeOffset.Now.ToUnixTimeMilliseconds();
             dt2 = dtin;
             plz = new PosslistStuff();
+            plz.SetDirecPath(direcpath);
             plz.LoadPossList(type, d, n);
             mss = new MovesetStuff();
+            mss.SetDirecPath(direcpath);
             mss.LoadMovesetStuff(type, d, n);
             song = new MoveItSingle();
             nofmax = 0;
+            
             song.StartIt(primes, mss.GetMoveSet(), mss.GetNF(), plz.GetPossList(), plz.GetNR(), plz.GetNC(), mss.GetNMovez(), type);
             song.StartIt2(l);
 
             proc = new PossProcessor();
+            
             proc.StartIt(plz.GetPossList(), plz.GetNR(), plz.GetNC(), primes);
             nt = 0;
             dt = 0;
@@ -624,8 +666,10 @@ namespace RubiksStuff
             st = DateTimeOffset.Now.ToUnixTimeMilliseconds();
             dt2 = dtin;
             plz = new PosslistStuff();
+            plz.SetDirecPath(direcpath);
             plz.LoadPossList(type, d, n);
             mss = new MovesetStuff();
+            mss.SetDirecPath(direcpath);
             mss.LoadMovesetStuff(type, d, n);
             song = new MoveItSingle();
             nofmax = 0;
@@ -912,26 +956,31 @@ namespace RubiksStuff
         private int[,] posslis;
         private int[] checko;
         private int nc, nr;
+        private string direcpath;
+        public void SetDirecPath(string direcpathin)
+        {
+            direcpath = direcpathin;
+        }
         public void LoadPossList(int typein, int din, int nin)
         {
             nin2 = nin.ToString();
             din2 = din.ToString();
             if (typein == 0)
             {
-                patho = @"C:\rubiks\standard\posslist\" + din2 + "d" + nin2 + "poss.dat";
+                patho = direcpath + "\\rubiks\\standard\\posslist\\" + din2 + "d" + nin2 + "poss.dat";
 
             }
             else if (typein == 2)
             {
-                patho = @"C:\rubiks\standard\posslist\cubeoposs.dat";
+                patho = direcpath + "\\rubiks\\standard\\posslist\\cubeoposs.dat";
             }
             else if (typein == 1)
             {
-                patho = @"C:\rubiks\standard\posslist\megaposs.dat";
+                patho = direcpath + "\\rubiks\\standard\\posslist\\megaposs.dat";
             }
             else
             {
-                patho = @"C:\rubiks\standard\posslist\pyrposs.dat";
+                patho = direcpath + "\\rubiks\\standard\\posslist\\pyrposs.dat";
             }
 
             texto = System.IO.File.ReadAllLines(patho);
@@ -1000,6 +1049,11 @@ namespace RubiksStuff
         private string[] texto;
         private string line;
         private string[] things;
+        private string direcpath;
+        public void SetDirecPath(string direcin)
+        {
+            direcpath = direcin;
+        }
         public void LoadMovesetStuff(int typein, int din, int nin)
         {
             n = nin;
@@ -1008,7 +1062,7 @@ namespace RubiksStuff
             nin2 = nin.ToString();
             din2 = din.ToString();
             typein2 = typein.ToString();
-            patho = @"C:\rubiks\standard\movesets\moveset_" + typein2 + "_" + din2 + "_" + nin2 + ".dat";
+            patho = direcpath + "\\rubiks\\standard\\movesets\\moveset_" + typein2 + "_" + din2 + "_" + nin2 + ".dat";
             texto = System.IO.File.ReadAllLines(patho);
             things = texto[0].Split(" ");
             nmovestot = int.Parse(things[0]);
@@ -1223,7 +1277,7 @@ namespace RubiksStuff
         {
             return maporig;
         }
-        public void makeIntoBigInteger()
+        public void MakeIntoBigInteger()
         {
 
         }
@@ -1372,7 +1426,7 @@ namespace RubiksStuff
         {
             return cube0;
         }
-        public void printCube0()
+        public void PrintCube0()
         {
             Console.Write("\t");
             for (int gt = 0; gt < nf; gt++)
